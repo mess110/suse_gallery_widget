@@ -17,7 +17,7 @@ module SuseGalleryPlasmoid
       self.background_hints = Plasma::Applet.DefaultBackground
  
       layout = Qt::GraphicsLinearLayout.new Qt::Vertical, self
-      @gallery.get_appliances.each do |a|
+      @gallery.appliances.each do |a|
         line = Qt::GraphicsLinearLayout.new(Qt::Horizontal, layout) do
           label = Plasma::Label.new
           label.text = a[:name]
