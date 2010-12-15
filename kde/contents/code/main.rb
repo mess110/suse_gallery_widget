@@ -1,4 +1,5 @@
 # <Copyright and license information goes here.>
+require 'rubygems'
 require 'plasma_applet'
 require 'suse_gallery_wrapper'
  
