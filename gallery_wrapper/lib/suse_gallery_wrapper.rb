@@ -30,12 +30,10 @@ end
 
 class SuseGalleryWrapper
 
+  attr_reader :appliances
+
   def initialize
-    @appliances = get_appliances
-  end
-  
-  def get_appliances
-    @appliances
+    @appliances = request_appliances
   end
 
   def start_testdrive appliance_number
