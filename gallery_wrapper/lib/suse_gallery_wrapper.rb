@@ -36,10 +36,9 @@ class SuseGalleryWrapper
     @appliances = request_appliances
   end
 
-  def start_testdrive appliance_number
+  def start_testdrive appliance_id
     #TODO make sure its in range!
 
-    appliance_id      = request_appliances[appliance_number][:id]
     appliance_version = get_version(appliance_id)
 
     parsed_xml = GalleryRequest.post_request("/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
@@ -57,8 +56,7 @@ class SuseGalleryWrapper
     appliances = []
     parsed_xml.xpath('//appliance').each do |a|
       appliances << {
-        :id   => a.xpath('./id').text,
-        :name => a.xpath('./name').text
+        a.xpath('./id').text => a.xpath('./name').text
       }
     end
     appliances
