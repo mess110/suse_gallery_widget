@@ -30,7 +30,31 @@ end
 
 class SuseGalleryWrapper
 
-  def self.get_appliances
+  def initialize
+    @appliances = get_appliances
+  end
+  
+  def get_appliances
+    @appliances
+  end
+
+  def start_testdrive appliance_number
+    #TODO make sure its in range!
+
+    appliance_id      = request_appliances[appliance_number][:id]
+    appliance_version = get_version(appliance_id)
+
+    parsed_xml = GalleryRequest.post_request("/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
+    {
+      :host     => parsed_xml.xpath('//host').text,
+      :port     => parsed_xml.xpath('//port').text,
+      :password => parsed_xml.xpath('//password').text
+    }
+  end
+
+  private
+
+  def request_appliances
     parsed_xml = GalleryRequest.get_request('/api/v2/gallery/appliances_list/?popular=''&per_page=5')
     appliances = []
     parsed_xml.xpath('//appliance').each do |a|
@@ -42,17 +66,8 @@ class SuseGalleryWrapper
     appliances
   end
 
-  def self.get_version appliance_id
+  def get_version appliance_id
     parsed_xml = GalleryRequest.get_request("/api/v2/gallery/appliances/#{appliance_id}")
     parsed_xml.xpath('.//appliance//version').text
-  end
-
-  def self.start_testdrive appliance_id, appliance_version
-    parsed_xml = GalleryRequest.post_request("/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
-    {
-      :host     => parsed_xml.xpath('//host').text,
-      :port     => parsed_xml.xpath('//port').text,
-      :password => parsed_xml.xpath('//password').text
-    }
   end
 end
