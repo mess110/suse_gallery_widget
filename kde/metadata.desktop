@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=SUSE Gallery plasmoid
+Name=SUSE Gallery
+Comment=SUSE Gallery plasmoid
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=chronometer

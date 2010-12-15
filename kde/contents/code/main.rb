@@ -1,11 +1,13 @@
 # <Copyright and license information goes here.>
 require 'plasma_applet'
+require 'suse_gallery_wrapper'
  
 module SuseGalleryPlasmoid
   class Main < PlasmaScripting::Applet
     def initialize parent
       super parent
       @testdrive_icon = package.filePath("images", "action-testdrive.png")
+      @gallery = SuseGalleryWrapper.new
     end
  
     def init
@@ -14,16 +16,16 @@ module SuseGalleryPlasmoid
       self.background_hints = Plasma::Applet.DefaultBackground
  
       layout = Qt::GraphicsLinearLayout.new Qt::Vertical, self
-      20.times do |i|
+      @gallery.get_appliances.each do |a|
         line = Qt::GraphicsLinearLayout.new(Qt::Horizontal, layout) do
           label = Plasma::Label.new
-          label.text = "Hello world #{i}!"
+          label.text = a[:name]
           
           button = Plasma::PushButton.new
           button.text = "Push me!"
           button.image = @testdrive_icon
           button.connect(SIGNAL(:clicked)) do
-            puts "button #{i} has been pressed"
+            puts "button #{a[:id]} has been pressed"
           end
 
           add_item label
