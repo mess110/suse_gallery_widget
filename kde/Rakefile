@@ -1,0 +1,39 @@
+require 'rake'
+require 'rubygems'
+require 'fileutils'
+
+task :default => "build"
+
+BUILD_DIR = File.join(File.dirname(__FILE__), 'build')
+PLASMOID_NAME = 'suse-gallery-plasmoid'
+
+desc "clean"
+task :clean do
+  FileUtils.rm_rf BUILD_DIR
+end
+
+desc "build"
+task :build  => :clean do
+  system "zip -r #{PLASMOID_NAME} ."
+  FileUtils.mkdir BUILD_DIR
+  FileUtils.mv "#{PLASMOID_NAME}.zip", BUILD_DIR
+end
+
+desc "uninstall"
+task :uninstall do
+  system "plasmapkg -r #{PLASMOID_NAME}"
+end
+
+desc "install"
+task :install => :uninstall do
+  system "plasmapkg -i #{BUILD_DIR}/#{PLASMOID_NAME}.zip"
+end
+
+desc "refresh"
+task :refresh => [:build, :install] do
+end
+
+desc "start"
+task :start do
+  system "plasmoidviewer #{PLASMOID_NAME}"
+end
