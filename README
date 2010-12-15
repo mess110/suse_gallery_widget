@@ -3,10 +3,4 @@ SuseGallery Widget
 Flavio Castelli
 Cristian Messel
 
-The requests we need to do:
-  1. Get a list of popular appliances
-    curl -u [user]:[key] -X GET "http://susestudio.com/api/v2/gallery/appliances_list/?per_page=1&popular=''"
-  2. Get the appliance version
-    curl -u [user]:[key] -X GET "http://susestudio.com/api/v2/gallery/appliances/130166"
-  3. Start a testdrive of that appliance
-    curl -u [user]:[key] -X POST "http://susestudio.com/api/v2/gallery/appliance_testdrive/291415?version=1.0.1"
+sudo gem install jeweler
