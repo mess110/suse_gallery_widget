@@ -37,27 +37,28 @@ class SuseGalleryWrapper
   end
 
   def start_testdrive appliance_id
-    #TODO make sure its in range!
+    #TODO make sure it exists
 
     appliance_version = get_version(appliance_id)
 
     parsed_xml = GalleryRequest.post_request("/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
-    {
+    td = {
       :host     => parsed_xml.xpath('//host').text,
       :port     => parsed_xml.xpath('//port').text,
       :password => parsed_xml.xpath('//password').text
     }
+    cmd = "echo -n '#{td[:password]}' | vncviewer -autopass #{td[:host]}:#{td[:port]} &"
+    system(cmd)
+    td
   end
 
   private
 
   def request_appliances
     parsed_xml = GalleryRequest.get_request('/api/v2/gallery/appliances_list/?popular=''&per_page=5')
-    appliances = []
+    appliances = {}
     parsed_xml.xpath('//appliance').each do |a|
-      appliances << {
-        a.xpath('./id').text => a.xpath('./name').text
-      }
+      appliances[a.xpath('./id').text] = a.xpath('./name').text
     end
     appliances
   end
