@@ -2,6 +2,12 @@ require 'net/http'
 require 'nokogiri'
 require 'singleton'
 
+class InvalidRequestType < StandardError
+end
+
+class InvalidApplianceId < StandardError
+end
+
 class GalleryRequest
   BASE_URL        = 'susestudio.com'
   BASIC_AUTH_USER = 'xvuetrkt'
@@ -14,10 +20,17 @@ class GalleryRequest
       elsif type == "post"
         req = Net::HTTP::Post.new(path)
       else
+        raise InvalidRequestType.new("Request type not supported")
       end
       req.basic_auth BASIC_AUTH_USER, BASIC_AUTH_PASS
       parse_xml(http.request(req).body)
     }
+  end
+  
+  def self.get_logo appliance_id
+    file_path = "/tmp/#{appliance_id}"
+    system "wget --http-user=#{BASIC_AUTH_USER} --http-password=#{BASIC_AUTH_PASS} -q -O #{file_path} 'http://susestudio.com/api/v2/gallery/appliance_logo/#{appliance_id}'"
+    file_path
   end
 
   def self.parse_xml xml
@@ -33,8 +46,14 @@ class SuseGalleryWrapper
     @appliances = request_appliances
   end
 
+  def get_logo appliance_id
+    GalleryRequest.get_logo(appliance_id)
+  end
+
   def start_testdrive appliance_id
-    #TODO make sure it exists
+    if !@appliances.has_key?(appliance_id)
+      raise InvalidApplianceId.new("appliance_id not found")
+    end
 
     appliance_version = get_version(appliance_id)
 
@@ -52,6 +71,7 @@ class SuseGalleryWrapper
   private
 
   def request_appliances
+    # "/api/v2/gallery/appliances_list/?latest=''&per_page=5"
     parsed_xml = GalleryRequest.request("get", "/api/v2/gallery/appliances_list/?popular=''&per_page=5")
     appliances = {}
     parsed_xml.xpath('//appliance').each do |a|

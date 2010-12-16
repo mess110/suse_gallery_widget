@@ -30,7 +30,6 @@ class SuseGalleryGtk
   def build_menu
     menu=Gtk::Menu.new
 
-    count = 0
     @gallery.appliances.each_pair do |key, value|
       appliance_entry=Gtk::ImageMenuItem.new(value)
       appliance_entry.signal_connect('activate'){
