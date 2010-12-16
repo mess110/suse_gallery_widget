@@ -36,12 +36,17 @@ class SuseGalleryGtk
       appliance_entry=Gtk::ImageMenuItem.new(value)
       appliance_entry.signal_connect('activate'){
         @status_icon.blinking=true
+        Thread.abort_on_exception = true
         Thread.new {
-          puts "starting testdrive #{key}"
-          td = @gallery.start_testdrive(key)
-          @gallery.connect_to_testdrive(td)
-          puts td
-          @status_icon.blinking=false
+          begin
+            puts "starting testdrive #{key}"
+            td = @gallery.start_testdrive(key)
+            @gallery.connect_to_testdrive(td)
+          rescue
+            puts "error starting testdrive!"
+          ensure
+            @status_icon.blinking=false
+          end
         }
       }
       menu.append(appliance_entry)

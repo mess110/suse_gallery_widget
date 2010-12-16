@@ -8,6 +8,9 @@ end
 class InvalidApplianceId < StandardError
 end
 
+class GalleryTestdriveError < StandardError
+end
+
 class GalleryRequest
   BASE_URL        = 'susestudio.com'
   BASIC_AUTH_USER = 'xvuetrkt'
@@ -65,6 +68,11 @@ class SuseGalleryWrapper
     appliance_version = get_version(appliance_id)
 
     parsed_xml = GalleryRequest.request("post", "/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
+
+    if parsed_xml.xpath('.//error').count == 1
+      raise GalleryTestdriveError.new("Error starting Testdrive by SuseGallery")
+    end
+
     {
       :host     => parsed_xml.xpath('//host').text,
       :port     => parsed_xml.xpath('//port').text,
