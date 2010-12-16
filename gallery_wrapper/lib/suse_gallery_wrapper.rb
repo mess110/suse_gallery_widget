@@ -44,7 +44,7 @@ class SuseGalleryWrapper
       :port     => parsed_xml.xpath('//port').text,
       :password => parsed_xml.xpath('//password').text
     }
-    cmd = "echo -n '#{td[:password]}' | vncviewer -autopass #{td[:host]}:#{td[:port]} &"
+    cmd = "echo -n '#{td[:password]}' | vncviewer -encodings 'zlib hextile copyrect' -autopass #{td[:host]}:#{td[:port]} &"
     system(cmd)
     td
   end
