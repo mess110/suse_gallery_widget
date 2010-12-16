@@ -9,8 +9,10 @@ class SuseGalleryGtk
 
   def initialize
     build_status_icon
-    get_suse_appliances
-    build_menu
+    Thread.new {
+      get_suse_appliances
+      build_menu
+    }
     Gtk.main
   end
   
@@ -24,7 +26,7 @@ class SuseGalleryGtk
     @status_icon=Gtk::StatusIcon.new
     @status_icon.pixbuf=Gdk::Pixbuf.new('favicon.ico')
     @status_icon.tooltip='SuseGallery'
-    @status_icon.signal_connect('activate'){ puts "a lot of info here"}
+    @status_icon.blinking=true
   end
 
   def build_menu
@@ -33,9 +35,13 @@ class SuseGalleryGtk
     @gallery.appliances.each_pair do |key, value|
       appliance_entry=Gtk::ImageMenuItem.new(value)
       appliance_entry.signal_connect('activate'){
-        puts "starting testdrive #{key}"
-        td = @gallery.start_testdrive(key)
-        puts td
+        @status_icon.blinking=true
+        Thread.new {
+          puts "starting testdrive #{key}"
+          td = @gallery.start_testdrive(key)
+          puts td
+          @status_icon.blinking=false
+        }
       }
       menu.append(appliance_entry)
     end
@@ -48,6 +54,7 @@ class SuseGalleryGtk
     menu.show_all
 
     @status_icon.signal_connect('popup-menu'){|tray, button, time| menu.popup(nil, nil, button, time)}
+    @status_icon.blinking=false
   end
 end
 
