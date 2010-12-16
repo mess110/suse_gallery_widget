@@ -53,13 +53,13 @@ module SuseGalleryPlasmoid
           button.connect(SIGNAL(:clicked)) do
             Thread.new {
               begin
-                raise "foo"
                 puts "starting testdrive #{appliance_id}"
                 td = @gallery.start_testdrive(appliance_id)
                 puts td.inspect
                 @gallery.connect_to_testdrive(td)
               rescue
-                KDE::MessageBox.error(self, "#{$!}", "SUSE gallery plasmoid - error")
+                KDE::MessageBox.error(Qt::Widget.new, $!,
+                                      "Testdrive error")
               end
             }
           end
