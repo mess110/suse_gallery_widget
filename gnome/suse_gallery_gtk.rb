@@ -22,9 +22,7 @@ class SuseGalleryGtk
 
   def build_status_icon
     @status_icon=Gtk::StatusIcon.new
-    @status_icon.stock=Gtk::Stock::DIALOG_INFO
-    ##or a personnal one
-    #status_icon.pixbuf=Gdk::Pixbuf.new('/path/to/image')
+    @status_icon.pixbuf=Gdk::Pixbuf.new('favicon.ico')
     @status_icon.tooltip='SuseGallery'
     @status_icon.signal_connect('activate'){ puts "a lot of info here"}
   end
