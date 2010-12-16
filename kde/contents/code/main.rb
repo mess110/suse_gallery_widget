@@ -35,7 +35,7 @@ module SuseGalleryPlasmoid
         puts "starting to fetch"
         #@layout.add_item @busy_widget
         
-        @gallery = SuseGalleryWrapper.new
+        @gallery = SuseGalleryWrapper.new "latest", 10
         #@layout.remove_item @busy_widget
         puts "fetch done"
         @busy_widget.set_visible false
@@ -51,17 +51,20 @@ module SuseGalleryPlasmoid
           button.setMinimumSize 24,24
           button.setMaximumSize 24,24
           button.connect(SIGNAL(:clicked)) do
-            Thread.new {
+            #Thread.new {
               begin
                 puts "starting testdrive #{appliance_id}"
                 td = @gallery.start_testdrive(appliance_id)
+                puts "hello!"
                 puts td.inspect
+
                 @gallery.connect_to_testdrive(td)
               rescue
+                puts $!
                 KDE::MessageBox.error(Qt::Widget.new, $!,
                                       "Testdrive error")
               end
-            }
+            #}
           end
 
           line_layout.add_item label
