@@ -39,6 +39,7 @@ class SuseGalleryGtk
         Thread.new {
           puts "starting testdrive #{key}"
           td = @gallery.start_testdrive(key)
+          @gallery.connect_to_testdrive(td)
           puts td
           @status_icon.blinking=false
         }

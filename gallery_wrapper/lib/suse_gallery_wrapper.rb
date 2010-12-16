@@ -65,14 +65,16 @@ class SuseGalleryWrapper
     appliance_version = get_version(appliance_id)
 
     parsed_xml = GalleryRequest.request("post", "/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
-    td = {
+    {
       :host     => parsed_xml.xpath('//host').text,
       :port     => parsed_xml.xpath('//port').text,
       :password => parsed_xml.xpath('//password').text
     }
+  end
+
+  def connect_to_testdrive td
     cmd = "echo -n '#{td[:password]}' | vncviewer -encodings 'zlib hextile copyrect' -autopass #{td[:host]}:#{td[:port]} &"
     system(cmd)
-    td
   end
 
   private
