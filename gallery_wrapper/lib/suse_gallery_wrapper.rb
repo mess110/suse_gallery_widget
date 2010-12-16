@@ -7,17 +7,14 @@ class GalleryRequest
   BASIC_AUTH_USER = 'xvuetrkt'
   BASIC_AUTH_PASS = 'tsrjU6VPhcE6'
 
-  def self.get_request path
+  def self.request type, path
     Net::HTTP.start(BASE_URL) {|http|
-      req = Net::HTTP::Get.new(path)
-      req.basic_auth BASIC_AUTH_USER, BASIC_AUTH_PASS
-      parse_xml(http.request(req).body)
-    }
-  end
-  
-  def self.post_request path
-    Net::HTTP.start(BASE_URL) {|http|
-      req = Net::HTTP::Post.new(path)
+      if type == "get"
+        req = Net::HTTP::Get.new(path)
+      elsif type == "post"
+        req = Net::HTTP::Post.new(path)
+      else
+      end
       req.basic_auth BASIC_AUTH_USER, BASIC_AUTH_PASS
       parse_xml(http.request(req).body)
     }
@@ -41,7 +38,7 @@ class SuseGalleryWrapper
 
     appliance_version = get_version(appliance_id)
 
-    parsed_xml = GalleryRequest.post_request("/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
+    parsed_xml = GalleryRequest.request("post", "/api/v2/gallery/appliance_testdrive/#{appliance_id}?version=#{appliance_version}")
     td = {
       :host     => parsed_xml.xpath('//host').text,
       :port     => parsed_xml.xpath('//port').text,
@@ -55,7 +52,7 @@ class SuseGalleryWrapper
   private
 
   def request_appliances
-    parsed_xml = GalleryRequest.get_request('/api/v2/gallery/appliances_list/?popular=''&per_page=5')
+    parsed_xml = GalleryRequest.request("get", "/api/v2/gallery/appliances_list/?popular=''&per_page=5")
     appliances = {}
     parsed_xml.xpath('//appliance').each do |a|
       appliances[a.xpath('./id').text] = a.xpath('./name').text
@@ -64,7 +61,7 @@ class SuseGalleryWrapper
   end
 
   def get_version appliance_id
-    parsed_xml = GalleryRequest.get_request("/api/v2/gallery/appliances/#{appliance_id}")
+    parsed_xml = GalleryRequest.request("get", "/api/v2/gallery/appliances/#{appliance_id}")
     parsed_xml.xpath('.//appliance//version').text
   end
 end
