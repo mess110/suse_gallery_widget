@@ -3,7 +3,7 @@ require 'suse_gallery_wrapper'
 require 'gtk2'
 
 class SuseGalleryGtk
-  
+
   attr_reader :status_icon
   attr_reader :gallery
 
@@ -15,11 +15,11 @@ class SuseGalleryGtk
     }
     Gtk.main
   end
-  
+
   private
 
   def get_suse_appliances
-    @gallery = SuseGalleryWrapper.new
+    @gallery = SuseGalleryWrapper.new('latest', 10)
   end
 
   def build_status_icon
@@ -52,7 +52,7 @@ class SuseGalleryGtk
       menu.append(appliance_entry)
     end
 
-    quit=Gtk::ImageMenuItem.new(Gtk::Stock::QUIT)
+    quit=Gtk::ImageMenuItem.new("Quit")
     quit.signal_connect('activate'){Gtk.main_quit}
 
     menu.append(Gtk::SeparatorMenuItem.new)

@@ -88,6 +88,7 @@ class SuseGalleryWrapper
   private
 
   def request_appliances(type, count)
+    # TODO replace these hardcoded names with constants
     if !['popular', 'latest'].include?(type)
       raise InvalidRequestType.new("Appliance type not available.")
     end
