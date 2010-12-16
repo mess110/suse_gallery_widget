@@ -31,14 +31,12 @@ class SuseGalleryGtk
     menu=Gtk::Menu.new
 
     count = 0
-    @gallery.appliances.each do |a|
-      appliance_entry=Gtk::ImageMenuItem.new(a[:name])
+    @gallery.appliances.each_pair do |key, value|
+      appliance_entry=Gtk::ImageMenuItem.new(value)
       appliance_entry.signal_connect('activate'){
-        puts "starting testdrive #{a[:id]}"
-        td = @gallery.start_testdrive(2)
-        puts td[:host]
-        puts td[:port]
-        puts td[:password]
+        puts "starting testdrive #{key}"
+        td = @gallery.start_testdrive(key)
+        puts td
       }
       menu.append(appliance_entry)
     end
