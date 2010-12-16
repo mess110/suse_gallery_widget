@@ -40,10 +40,17 @@ end
 
 class SuseGalleryWrapper
 
+  DEFAULT_APPLIANCE_TYPE  = 'popular'
+  DEFAULT_APPLIANCE_COUNT = 5
+
   attr_reader :appliances
 
-  def initialize
-    @appliances = request_appliances
+  def initialize(type = DEFAULT_APPLIANCE_TYPE, count = DEFAULT_APPLIANCE_COUNT)
+    refresh(type, count)
+  end
+  
+  def refresh(type = DEFAULT_APPLIANCE_TYPE, count = DEFAULT_APPLIANCE_COUNT)
+    @appliances = request_appliances(type, count)
   end
 
   def get_logo appliance_id
@@ -70,9 +77,12 @@ class SuseGalleryWrapper
 
   private
 
-  def request_appliances
-    # "/api/v2/gallery/appliances_list/?latest=''&per_page=5"
-    parsed_xml = GalleryRequest.request("get", "/api/v2/gallery/appliances_list/?popular=''&per_page=5")
+  def request_appliances(type, count)
+    if !['popular', 'latest'].include?(type)
+      raise InvalidRequestType.new("Appliance type not available.")
+    end
+
+    parsed_xml = GalleryRequest.request("get", "/api/v2/gallery/appliances_list/?#{type}=''&per_page=#{count}")
     appliances = {}
     parsed_xml.xpath('//appliance').each do |a|
       appliances[a.xpath('./id').text] = a.xpath('./name').text
