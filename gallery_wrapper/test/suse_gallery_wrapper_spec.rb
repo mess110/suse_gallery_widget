@@ -1,6 +1,6 @@
 require 'fakeweb'
 
-require 'suse_gallery_wrapper'
+require '../lib/suse_gallery_wrapper'
 
 FIXTURES = 'fixtures/'
 
@@ -20,7 +20,7 @@ describe SuseGalleryWrapper do
   end
 
   describe "#get_logo" do
-    it "returns an the location to the appliance id" do
+    it "returns the location to the appliance id" do
       GalleryRequest.stub(:system)
 
       @gallery.get_logo(3).should == "/tmp/3"
