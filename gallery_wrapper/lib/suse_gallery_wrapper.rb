@@ -13,8 +13,8 @@ end
 
 class GalleryRequest
   BASE_URL        = 'susestudio.com'
-  BASIC_AUTH_USER = 'xvuetrkt'
-  BASIC_AUTH_PASS = 'tsrjU6VPhcE6'
+  BASIC_AUTH_USER = ''
+  BASIC_AUTH_PASS = ''
 
   def self.request type, path
     Net::HTTP.start(BASE_URL) {|http|
